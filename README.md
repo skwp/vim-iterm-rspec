@@ -12,6 +12,8 @@ Stolen from lparry/vim-iterm-rspec and modified to support running
 specs with spring for running quick Rails specs, or just naked rspec
 for fast specs.
 
+This plugin is included in the [YADR dotfile project](http://github.com/skwp/dotfiles)
+
 ### Included commands:
 
 ```
