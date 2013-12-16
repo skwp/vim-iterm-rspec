@@ -24,8 +24,8 @@ RunItermSpringSpecLine
 ### Suggested Key Mappings
 
 ```vim
-map <D-R> :RunItermSpec<cr>
-map <D-L> :RunItermSpecLine<cr>
-map ,<D-R> :RunItermSpringSpec<cr>
-map ,<D-L> :RunItermSpringSpecLine<cr>
+map <D-r> :RunItermSpec<cr>
+map <D-l> :RunItermSpecLine<cr>
+map <D-R> :RunItermSpringSpec<cr>
+map <D-L> :RunItermSpringSpecLine<cr>
 ```
