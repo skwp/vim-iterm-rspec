@@ -58,6 +58,7 @@ module ITerm
           end tell
         end try
         tell mySession to write text "#{command}"
+        activate
       end tell
     EOF
   end
