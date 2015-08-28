@@ -9,6 +9,8 @@ command! RunItermSpecLine :ruby ITerm.rspec_line
 command! RunItermSpringSpec :ruby ITerm.spring_rspec
 command! RunItermSpringSpecLine :ruby ITerm.spring_rspec_line
 
+command! RunItermZeusSpec :ruby ITerm.zeus_rspec
+command! RunItermZeusSpecLine :ruby ITerm.zeus_rspec_line
 ruby <<EOF
 
 module ITerm
@@ -27,6 +29,14 @@ module ITerm
 
   def self.spring_rspec(options="")
     exec("spring rspec #{current_file}#{options}")
+  end
+
+  def self.zeus_rspec_line
+    zeus_rspec(":#{current_line}")
+  end
+
+  def self.zeus_rspec(options="")
+    exec("zeus rspec #{current_file}#{options}")
   end
 
   private
