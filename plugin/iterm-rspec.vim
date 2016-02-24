@@ -12,6 +12,8 @@ command! RunItermSpringSpecLine :ruby ITerm.spring_rspec_line
 command! RunItermZeusSpec :ruby ITerm.zeus_rspec
 command! RunItermZeusSpecLine :ruby ITerm.zeus_rspec_line
 
+let g:iterm_rspec_version='legacy'
+
 ruby <<EOF
 
 module ITerm
@@ -40,6 +42,7 @@ module ITerm
     exec("zeus rspec #{current_file}#{options}")
   end
 
+
   private
 
 
@@ -55,16 +58,32 @@ module ITerm
     VIM::Buffer.current
   end
 
+  APPLESCRIPT_VERSIONS = {
+    'legacy' => {
+      :app_name => 'iTerm',
+      :current_session => 'current session of the current terminal',
+      :new_window => '(make new terminal)',
+      :launch_session => 'launch session "Default"'
+    },
+    '2.9' => {
+      :app_name => 'iTerm2',
+      :current_session => 'current session of first window',
+      :new_window => '(create window with profile "Default")',
+      :launch_session => '' # Session is launched with window
+    }
+  }
 
   def self.exec(command)
+    iterm_version = Vim.evaluate('g:iterm_rspec_version')
+    as_commands = APPLESCRIPT_VERSIONS[iterm_version]
     osascript <<-EOF
-      tell application "iTerm"
+      tell application "#{as_commands[:app_name]}"
         try
-          set mySession to the current session of the current terminal
+          set mySession to the #{as_commands[:current_session]}
         on error
-          set myTerminal to (make new terminal)
+          set myTerminal to #{as_commands[:new_window]}
           tell myTerminal
-            launch session "Default"
+            #{as_commands[:launch_session]}
             set mySession to the current session
           end tell
         end try
