@@ -55,29 +55,58 @@ module ITerm
     VIM::Buffer.current
   end
 
+  def self.iterm_version
+    version_string = osascript <<-EOF
+      tell application "iterm" to get version
+    EOF
+    version_string.to_f
+  end
+
+  def self.v3_applescript(command)
+    <<-EOF
+    tell application "iTerm"
+      try
+        set mySession to the current session of the current window
+      on error
+        tell the current window to create tab with default profile
+        set mySession to the current session of the current window
+      end try
+      tell mySession to write text "#{command}"
+      activate
+    end tell
+    EOF
+  end
+
+  def self.legacy_applescript(command)
+    <<-EOF
+    tell application "iTerm"
+      try
+        set mySession to the current session of the current terminal
+      on error
+        set myTerminal to (make new terminal)
+        tell myTerminal
+          launch session "Default"
+          set mySession to the current session
+        end tell
+      end try
+      tell mySession to write text "#{command}"
+      activate
+    end tell
+    EOF
+  end
 
   def self.exec(command)
-    osascript <<-EOF
-      tell application "iTerm"
-        try
-          set mySession to the current session of the current terminal
-        on error
-          set myTerminal to (make new terminal)
-          tell myTerminal
-            launch session "Default"
-            set mySession to the current session
-          end tell
-        end try
-        tell mySession to write text "#{command}"
-        activate
-      end tell
-    EOF
+    if iterm_version >= 3.0
+      osascript v3_applescript(command)
+    else
+      osascript legacy_applescript(command)
+    end
   end
 
 private
 
   def self.osascript(script)
-    system("osascript", "-e", script)
+    `osascript -e '#{script}'`
   end
 
 end
